@@ -1,0 +1,41 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: globex-weapons-api
+  description: "Globex Weapons API"
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/my-org/my-repo/blob/master/my-grpc-weapons-api.yaml"
+spec:
+  type: grpc
+  lifecycle: production
+  owner: dev-team
+  system: globex-system
+  definition: |
+    syntax = "proto3";
+    package myorg.mygrpcapi;
+    message MyWeaponRequest {
+      string query = 1;
+    }
+    message MyWeaponResponse {
+      string result = 1;
+    }
+    service MyGrpcWeaponsApi {
+      rpc MyWeaponMethod (MyWeaponRequest) returns (MyWeaponResponse);
+    }
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: globex-weapons-archive
+  description: "Globex Weapons Storage"
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/my-org/my-repo/blob/master/my-weapons-storage.yaml"
+spec:
+  type: service
+  lifecycle: production
+  owner: dev-team
+  system: globex-system
+  dependsOn:
+    - resource:globex-database
+  providesApis:
+    - globex-weapons-api
